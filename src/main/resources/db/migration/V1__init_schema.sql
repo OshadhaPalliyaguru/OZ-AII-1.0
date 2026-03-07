@@ -1,0 +1,27 @@
+CREATE TABLE users(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE chat_sessions(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    userid BIGINT NOT NULL,
+    tittle VARCHAR(255) NOT NULL,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE chat_messages(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    session_id BIGINT NOT NULL,
+    role ENUM('USER','AI') NOT NULL,
+    content TEXT NOT NULL,
+    timestamp TIMESTAMP default CURRENT_TIMESTAMP,
+    FOREIGN KEY (session_id) REFERENCES chat_sessions(id) ON DELETE CASCADE
+);
+
+
+

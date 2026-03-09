@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,16 +25,16 @@ public class ChatSession {
     private User user;
 
     @Column(nullable = false)
-    private String tittle;
+    private String title;
 
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAT;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> mesages = new ArrayList<>();
 
     @PrePersist
      protected void onCreate() {
-         this.createdAT = LocalDateTime.now();
+         this.createdAt = LocalDateTime.now();
     }
 }

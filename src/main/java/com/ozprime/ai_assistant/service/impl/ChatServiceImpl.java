@@ -8,8 +8,10 @@ import com.ozprime.ai_assistant.repository.ChatMessageRepository;
 import com.ozprime.ai_assistant.repository.ChatSessionRepository;
 import com.ozprime.ai_assistant.repository.UserRepository;
 import com.ozprime.ai_assistant.service.ChatService;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -19,12 +21,17 @@ public class ChatServiceImpl implements ChatService {
     private final ChatMessageRepository messageRepository;
     private final UserRepository userRepository;
 
+    private final ChatClient chatClient;
+
+
     public ChatServiceImpl(ChatSessionRepository sessionRepository,
                            ChatMessageRepository messageRepository,
-                           UserRepository userRepository) {
+                           UserRepository userRepository,
+                           ChatClient.Builder chatClientBuilder) {
         this.sessionRepository = sessionRepository;
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.chatClient = chatClientBuilder.build();
     }
 
     @Override
@@ -49,7 +56,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    @Transactional // The Enterprise Magic
+    @Transactional
     public ChatMessage sendMessageAndGetAIResponse(Long sessionId, String userMessageContent) {
         ChatSession session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new RuntimeException("Session not found"));
@@ -75,8 +82,9 @@ public class ChatServiceImpl implements ChatService {
 
 
     private String callExternalAI(String prompt) {
-
-        return "This is a simulated AI response for your prompt: " + prompt;
+        return chatClient.prompt()
+                .user(prompt)
+                .call()
+                .content();
     }
-
 }

@@ -1,6 +1,7 @@
 package com.ozprime.ai_assistant.model.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ozprime.ai_assistant.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class ChatMessage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false)
+    @JsonIgnore
     private ChatSession session;
 
     @Enumerated(EnumType.STRING)
